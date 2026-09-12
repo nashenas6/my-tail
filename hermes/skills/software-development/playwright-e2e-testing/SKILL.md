@@ -48,6 +48,24 @@ only know by looking at the running page.
   the test, or the next run starts with a broken login.
 - **`npm install` bumps patch versions in package-lock.json** (unrelated deps get
   `^`-range updates). That diff is real and harmless — commit it, don't fight it.
+- **Never hardcode test credentials in source.** Use a `.env.test` file (gitignored)
+  and `process.env.TEST_N_CODE` / `process.env.TEST_PASSWORD` with fallback defaults
+  in the shared fixtures module. Credentials in a public repo are a security leak.
+  Add `dotenv` to devDependencies and load `.env.test` in `playwright.config.ts`.
+- **Replace `waitForTimeout` with reactive waits.** Hardcoded sleeps are the #1
+  source of flaky tests. For Livewire: use `page.waitForFunction(() =>
+  !document.querySelector('.wire-loading'))` to wait for request completion. For
+  search results: use `page.waitForSelector(selector, { state: 'visible' })`. For
+  dialog handling where no DOM signal exists, keep `waitForTimeout` but add a
+  comment explaining why. See `references/livewire-maryui-quirks.md` for the
+  `.wire-loading` pattern.
+- **Do NOT use `networkidle` with Livewire SPAs.** Livewire maintains persistent
+  connections; `networkidle` may fire too early or never resolve. Wait for specific
+  UI state instead: `waitForSelector('table tbody tr')` or
+  `waitForFunction(() => !document.querySelector('.wire-loading'))`.
+- **Register dialog handlers BEFORE triggering the action.** If you set up
+  `page.on('dialog', handler)` after clicking the button that triggers it, the
+  dialog may fire before the listener is registered on slow machines.
 - **Smoke-link loop: use `page.request.get`, not page navigation.** To verify "no
   broken links", collect hrefs once from the drawer (`evaluateAll` deduping + filtering
   `href.startsWith('/') && !href.startsWith('//')`), then issue each as

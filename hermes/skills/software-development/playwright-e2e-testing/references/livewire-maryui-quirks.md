@@ -82,3 +82,26 @@ active menu element.
 MaryUI `Toast` trait renders a `.toast` element (class `toast ... toast-top toast-end`).
 Assert the success text with `toContainText(...)` + `.first()` on `.toast` to avoid
 strict-mode if concurrent toasts accumulate.
+
+## Reactive waits for Livewire requests
+
+Livewire adds a `.wire-loading` class to the page during pending requests. Use this
+instead of `waitForTimeout`:
+
+```ts
+// Wait for a Livewire request to complete
+await page.waitForFunction(() => {
+  return !document.querySelector('.wire-loading') ||
+         document.querySelectorAll('.wire-loading[style*="display: none"]').length > 0;
+}, { timeout: 15000 });
+
+// Wait for debounced search results to appear (e.g. person search dropdown)
+await page.waitForSelector('div.max-h-40 div.p-2', { state: 'visible', timeout: 10000 });
+
+// Wait for a table to re-render after filter change
+await page.waitForSelector('table tbody tr', { timeout: 10000 });
+```
+
+For search inputs with Livewire debounce (`wire:model.live.debounce.500ms`), wait
+for the result container to become visible rather than sleeping for an arbitrary
+duration. The debounce delay varies with server load.
