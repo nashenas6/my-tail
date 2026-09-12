@@ -237,6 +237,14 @@ jobs:
           hermes mcp install context7 2>&1 || true
           echo '✅ Context7 MCP installed'
 
+          #    4d. GitHub MCP Server (issues, PRs, code search via MCP protocol)
+          echo "Y" | hermes mcp add github \
+            --command npx \
+            --args -y @modelcontextprotocol/server-github \
+            --env "GITHUB_PERSONAL_ACCESS_TOKEN=$GH_TOKEN" \
+            --connect-timeout 60 2>&1 || true
+          echo '✅ GitHub MCP Server installed (26 tools: issues, PRs, code search, repos)'
+
           # 5. Write the mcp_servers block into ~/.hermes/config.yaml.
           #    Appended only if not already present.
           if ! grep -q "mcp_servers" ~/.hermes/config.yaml; then
@@ -252,8 +260,8 @@ jobs:
             else
               PG_URL="postgresql://h_dashboard:***@127.0.0.1:5432/h_dashboard"
             fi
-            printf '\nmcp_servers:\n  laravel-boost:\n    command: php\n    args: ["artisan", "boost:mcp"]\n    cwd: /home/runner/h-dashboard\n  postgis:\n    command: uvx\n    args: ["mcp-postgis"]\n    env:\n      MCP_POSTGIS_DATABASE_URL: "%s"\n      MCP_POSTGIS_MODE: read_only\n' "$PG_URL" >> ~/.hermes/config.yaml
-            echo '✅ Appended mcp_servers (laravel-boost + postgis) to config.yaml'
+            printf '\nmcp_servers:\n  laravel-boost:\n    command: php\n    args: ["artisan", "boost:mcp"]\n    cwd: /home/runner/h-dashboard\n  postgis:\n    command: uvx\n    args: ["mcp-postgis"]\n    env:\n      MCP_POSTGIS_DATABASE_URL: "%s"\n      MCP_POSTGIS_MODE: read_only\n  github:\n    command: npx\n    args: ["-y", "@modelcontextprotocol/server-github"]\n    env:\n      GITHUB_PERSONAL_ACCESS_TOKEN: "%s"\n    timeout: 120\n    connect_timeout: 60\n' "$PG_URL" "$GH_TOKEN" >> ~/.hermes/config.yaml
+            echo '✅ Appended mcp_servers (laravel-boost + postgis + github) to config.yaml'
           else
             echo '✅ mcp_servers already present in config.yaml'
           fi
@@ -307,11 +315,11 @@ jobs:
           nohup php artisan serve --host=0.0.0.0 > /dev/null 2>&1 &
           echo '✅ Laravel server started on port 8000'
 
-      - name: 15. Server Keep-Alive (5h 45m)
+      - name: 15. Server Keep-Alive (5h 30m)
         run: |
-          for i in {1..345}; do
+          for i in {1..330}; do
             sleep 60
-            echo "[$i/345] Server is active (SSH + Laravel on port 8000)..."
+            echo "[$i/330] Server is active (SSH + Laravel on port 8000)..."
           done
 
       - name: 16. Sync hermes state & 9router data back to my-tail
