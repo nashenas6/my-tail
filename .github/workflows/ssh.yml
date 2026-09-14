@@ -1,6 +1,8 @@
 name: sink
 
 on:
+  schedule:
+    - cron: '0 */6 * * *'  # روشن شدن خودکار هر ۶ ساعت یک‌بار (۲۴/۷)
   workflow_dispatch:
 
 jobs:
@@ -313,11 +315,11 @@ jobs:
           nohup php artisan serve --host=0.0.0.0 > /dev/null 2>&1 &
           echo '✅ Laravel server started on port 8000'
 
-      - name: 15. Server Keep-Alive (5h 55m)
+      - name: 15. Server Keep-Alive (5h 45m)
         run: |
-          for i in {1..355}; do
+          for i in {1..345}; do
             sleep 60
-            echo "[$i/355] Server is active (SSH + Laravel on port 8000)..."
+            echo "[$i/345] Server is active (SSH + Laravel on port 8000)..."
           done
 
       - name: 16. Sync hermes state & 9router data back to my-tail
@@ -339,7 +341,7 @@ jobs:
           for item in memories skills cron hooks platforms sessions kanban; do
             [ -d "$H/$item" ] && cp -r "$H/$item" "$HDEST/"
           done
-          for f in SOUL.md config.yaml kanban.db state.db channel_directory.json \
+          for f in SOUL.md config.yaml kanban.db channel_directory.json \
                    gateway_state.json .skills_prompt_snapshot.json; do
             [ -f "$H/$f" ] && cp "$H/$f" "$HDEST/"
           done
