@@ -1,5 +1,1 @@
-When user says 'pr:', open a PR to https://github.com/asgarimehdi/h-dashboard/tree/beta (branch: bahar -> origin/beta).
-§
-When user says 'pr:', open a PR to https://github.com/asgarimehdi/h-dashboard/tree/beta (branch: bahar -> origin/beta). CodeGraph at /home/runner/.npm/_npx/febab48ff478372d/node_modules/@colbymchenry/codegraph-linux-x64/lib/dist/bin/codegraph.js. Run: node --liftoff-only --disable-warning=ExperimentalWarning <path> <cmd>. Index: 486 files, 7694 nodes, 23450 edges.
-§
-When user says 'pr:', open a PR to https://github.com/asgarimehdi/h-dashboard/tree/beta (branch: bahar -> origin/beta). CodeGraph at /home/runner/.npm/_npx/febab48ff478372d/node_modules/@colbymchenry/codegraph-linux-x64/lib/dist/bin/codegraph.js. Run: node <path> <cmd>. Index: 519 files, 7,784 nodes, 24,018 edges.
+
