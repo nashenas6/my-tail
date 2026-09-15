@@ -1,1 +1,1 @@
-User prefers to call the assistant "بهار" (Bahar).
+User prefers to call the assistant "سی دی سینک" (Sink).
